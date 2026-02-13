@@ -5,6 +5,15 @@ import numpy as np
 from struct import pack
 from time import time
 
+from paker_config import (
+    BG_PATH,
+    HEADER_NAMES,
+    HEADERS_DIR,
+    LAYER_COLLECTION_DIR,
+    MASK_PATH,
+    WORLDMAP_BG_UASSET_PATH,
+)
+
 try:
     HAS_ENCODER = True
     from bc7_encoder import compress_bc7
@@ -18,74 +27,16 @@ __all__ = ["pak",
            "pak_stitched"]
 
 
-_HEADER_NAMES = {
-    "MapAcrithiaHex": [11804, 10792],
-    "MapAllodsBightHex": [13344, 8128],
-    "MapAshFieldsHex": [7184, 9904],
-    "MapBasinSionnachHex": [10264, 1024],
-    "MapCallahansPassageHex": [10264, 4576],
-    "MapCallumsCapeHex": [7184, 2800],
-    "MapClahstraHex": [13344, 6352],
-    "MapClansheadValleyHex": [13344, 2800],
-    "MapDeadlandsHex": [10264, 6352],
-    "MapDrownedValeHex": [11804, 7240],
-    "MapEndlessShoreHex": [14884, 7240],
-    "MapFarranacCoastHex": [5644, 5464],
-    "MapFishermansRowHex": [4104, 6352],
-    "MapGodcroftsHex": [16424, 4576],
-    "MapGreatMarchHex": [10264, 9904],
-    "MapGutterHex": [4104, 4576],
-    "MapHeartlandsHex": [8724, 9016],
-    "MapHomeRegionC": [19504, 11680],
-    "MapHomeRegionW": [1024, 1024],
-    "MapHowlCountyHex": [11804, 1912],
-    "MapKalokaiHex": [10264, 11680],
-    "MapKingsCageHex": [7184, 6352],
-    "MapKuuraStrandHex": [4104, 2800],
-    "MapLinnMercyHex": [8724, 5464],
-    "MapLochMorHex": [8724, 7240],
-    "MapLykosIsleHex": [17964, 5464],
-    "MapMarbanHollowHex": [11804, 5464],
-    "MapMooringCountyHex": [8724, 3688],
-    "MapMorgensCrossingHex": [14884, 3688],
-    "MapNevishLineHex": [5644, 3688],
-    "MapOarbreakerHex": [2564, 7240],
-    "MapOlavisWakeHex": [1024, 4576],
-    "MapOnyxHex": [16424, 9904],
-    "MapOriginHex": [5644, 9016],
-    "MapPalantineBermHex": [2564, 5464],
-    "MapPariPeakHex": [2564, 3688],
-    "MapPipersEnclaveHex": [19504, 8128],
-    "MapReachingTrailHex": [10264, 2800],
-    "MapReaversPassHex": [14884, 9016],
-    "MapRedRiverHex": [8724, 10792],
-    "MapSableportHex": [7184, 8128],
-    "MapShackledChasmHex": [11804, 9016],
-    "MapSpeakingWoodsHex": [8724, 1912],
-    "MapStemaLandingHex": [4104, 8128],
-    "MapStlicanShelfHex": [14884, 5464],
-    "MapStonecradleHex": [7184, 4576],
-    "MapTempestIslandHex": [16424, 6352],
-    "MapTerminusHex": [13344, 9904],
-    "MapTheFingersHex": [17964, 7240],
-    "MapTyrantFoothillsHex": [17964, 9016],
-    "MapUmbralWildwoodHex": [10264, 8128],
-    "MapViperPitHex": [11804, 3688],
-    "MapWeatheredExpanseHex": [13344, 4576],
-    "MapWestgateHex": [5644, 7240],
-    "MapWrestaHex": [16424, 8128],
-}
+_HEADER_NAMES = HEADER_NAMES
 
 HEADERS = {}
 _HEADERS_LOWER = {}
 
 for name in _HEADER_NAMES:
-    with open(f"assets/headers/{name}", "rb") as f:
+    with open(HEADERS_DIR / name, "rb") as f:
         data = f.read()
         HEADERS[name] = data
         _HEADERS_LOWER[name.lower()] = (name, data)
-
-BG_PATH = r"War\Content\Textures\UI\WorldMap\WorldMapBG.uasset"
 
 
 def _fix_key(name):
@@ -238,7 +189,7 @@ def _image_into_mapping(filename):
     print(f"Breaking {filename}...")
 
     stitched = Image.open(filename).convert("RGBA")
-    mask = Image.open("assets/mask.png").convert("L")
+    mask = Image.open(MASK_PATH).convert("L")
 
     stitched_array = np.array(stitched)
     mask_array = np.array(mask)
@@ -315,7 +266,7 @@ def pak_textures_bc7(output, compress, mappings, _print_time=True):
         print(f"  {i}/{total}", end="\r")
     print()
 
-    with open("assets/WorldMapBG.uasset", "rb") as fh:
+    with open(WORLDMAP_BG_UASSET_PATH, "rb") as fh:
         data = fh.read()
         files[BG_PATH] = data
 
@@ -413,6 +364,12 @@ def pak_stitched(output, compress, stitched_image):
         raise RuntimeError("Build encoder with build_encoder.py first")
 
     t1 = time()
-    mappings = _image_into_mapping(stitched_image)
+    stitched_path = stitched_image
+    if not os.path.isabs(stitched_path) and not os.path.exists(stitched_path):
+        candidate = os.path.join(str(LAYER_COLLECTION_DIR), stitched_path)
+        if os.path.exists(candidate):
+            stitched_path = candidate
+
+    mappings = _image_into_mapping(stitched_path)
     pak_textures_nprgba(output, compress, mappings, _print_time=False)
     print(f"Completed in {time() - t1:.2f}s")
