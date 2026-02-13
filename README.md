@@ -48,6 +48,7 @@ The `layer_collection` folder contains high-resolution stitched map layers that 
 - **t_heightmap.png** - Complete heightmap
 - **t_norm.png** - Normal map
 - **t_curvature.png** - Curvature map
+- **t_mountain_alert_mask.png** - High altitude alert zone mask
 
 #### Enhancement Layers
 - **ao.png** - Ambient occlusion (blend mode: multiply)
@@ -63,6 +64,7 @@ The `layer_collection` folder contains high-resolution stitched map layers that 
 - **glaciers.png** - Glaciers
 - **grid.png** - Grid overlay
 - **rdz.png** - Rapid decay zone overaly
+- **mountain_alert.png** - High altitude alert zone
 - **roads.png** - Roads
 - **bridges.png** - Bridges
 - **beaches.png** - Beaches
