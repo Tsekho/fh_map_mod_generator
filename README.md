@@ -57,24 +57,33 @@ The `layer_collection` folder contains high-resolution stitched map layers that 
 - **curvature_dips.png** - Concave points (blend mode: difference)
 - **heightmap_highs.png** - Terrain above water level (blend mode: additive)
 - **heightmap_lows.png** - Terrain below water level (blend mode: difference)
+- **roads_shadows.png** - Road shadow overlay (blend mode: multiply)
 - **rocks.png** - Rocks and mountains tinted blurred mask (blend mode: multiply)
 
-#### Feature Layers
-- **bulwark.png** - Bulwark structures
-- **glaciers.png** - Glaciers
-- **grid.png** - Grid overlay
-- **rdz.png** - Rapid decay zone overaly
-- **mountain_alert.png** - High altitude alert zone
+#### Urban Layers
+- **floors_over_roads.png** - Floor level assets rendered after roads
 - **roads.png** - Roads
+- **floors_under_roads.png** - Floor level assets rendered before roads
+- **sidewalks.png** - Sidewalks
 - **bridges.png** - Bridges
-- **beaches.png** - Beaches
+- **urban.png** - Towns, Bulwark, Relic Vaults, and Relic Ship layouts
 - **wells.png** - Water wells
 
-#### Structures Range Overlays
+#### Environment Layers
+- **beaches.png** - Beaches
+- **glaciers.png** - Glaciers
+- **foliage.png** - Trees, bushes, and trunks
+
+#### Overlay layers
 - **ranges_ai.png** - AI structure ranges
 - **ranges_cg.png** - Coastal gun ranges
 - **ranges_intel.png** - Intel ranges
 - **ranges_mh.png** - Mortar house ranges
+- **ranges_tap.png** - Listening kit ranges on OBS towers
+- **no_intel.png** - Intel blackout zones during contested borders
+- **mountain_alert.png** - High altitude alert zone
+- **rdz.png** - Rapid decay zone overlay
+- **grid.png** - Grid overlay
 
 Combine layers using your preferred image editing software
 
@@ -181,4 +190,5 @@ pak_stitched("my_custom_map", compress=True, stitched_image="my_custom_map.png")
 
 ## Credits
 
-- Layer collection is largerly composed and edited from [Wolfgang-IX/Foxhole-Map-Project](https://github.com/Wolfgang-IX/Foxhole-Map-Project)
+- Urban, road, and overlay layers done by myself
+- Terrain layer collection is largely composed and edited from [Wolfgang-IX/Foxhole-Map-Project](https://github.com/Wolfgang-IX/Foxhole-Map-Project)
